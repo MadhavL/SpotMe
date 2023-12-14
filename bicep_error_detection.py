@@ -31,7 +31,6 @@ DOWN_PHASE_THRESHOLD = 120
 CONTRACTION_THRESHOLD = 50
 ALIGNMENT_THRESHOLD = 9
 
-# If have time, could look into stage detection (up / down part of squat), and adjust the thresholds dynamically based on stage of squat
 cap = cv2.VideoCapture(0)
 stage = "down"
 min_contraction_angle = 0
@@ -68,7 +67,7 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
             left_elbow_landmark = landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value]
             left_wrist_landmark = landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value]
 
-            #Determine which side the curl is on, based on visibility
+            #Determine which side the curl is on, based on visibility. Then calculate the contraction and alignment angles
             if (right_shoulder_landmark.visibility > VISIBILITY_THRESHOLD and \
                 right_elbow_landmark.visibility > VISIBILITY_THRESHOLD and \
                     right_wrist_landmark.visibility > VISIBILITY_THRESHOLD):

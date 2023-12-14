@@ -10,27 +10,14 @@ import seaborn as sns
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-# For squats we care about the following points: Back, Hips, Legs
-# nose, left shoulder, right shoulder, right hip, left hip, right knee, left knee, right ankle and left ankle.
-# SQUAT_LANDMARKS = [
-#     "NOSE",
-#     "LEFT_SHOULDER",
-#     "RIGHT_SHOULDER",
-#     "LEFT_HIP",
-#     "RIGHT_HIP",
-#     "LEFT_KNEE",
-#     "RIGHT_KNEE",
-#     "LEFT_ANKLE",
-#     "RIGHT_ANKLE"
-# ]
+# For squats we care about the following issues:
 
 # Issues being tracked: 1) foot distance, 2) distance between knees
-# Feet placement: Can be detected by calculate ratio between the distance of 2 feet and the distance of 2 shoulders.
-# Knee distance: Can be detected by calculating ratio between the distance of 2 knee and 2 feet.
+# Feet placement: The ratio of the distance between the subjects feet and the distance between shoulders should be within a specific range.
+# Knee distance: The ratio of the distance between the subjects knees and distance between their feet should be within a specific range.
 
 df = pd.DataFrame(columns=["video", "shoulder_width", "feet_width", "knee_width"])
 
-# If have time, could look into stage detection (up / down part of squat), and adjust the thresholds dynamically based on stage of squat
 DIR = 'data/squats/good/'
 videos = os.listdir(DIR)
 for video in videos:
@@ -58,19 +45,19 @@ for video in videos:
             
             try:
                 landmarks = results.pose_landmarks.landmark
-                # * Calculate shoulder width
+                # Calculate distance between subjects shoulders
                 left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
                 right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
 
                 shoulder_width = utils.distance(left_shoulder, right_shoulder)
 
-                # * Calculate 2-foot width
+                # Calculate distance between subjects feet
                 left_foot_index = [landmarks[mp_pose.PoseLandmark.LEFT_FOOT_INDEX.value].x, landmarks[mp_pose.PoseLandmark.LEFT_FOOT_INDEX.value].y]
                 right_foot_index = [landmarks[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value].y]
 
                 feet_width = utils.distance(left_foot_index, right_foot_index)
                 
-                # * Calculate 2-knee width
+                # Calculate distance between subjects shoulders
                 left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x, landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
                 right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
 
@@ -79,14 +66,15 @@ for video in videos:
 
             except:
                 pass
-            
 
+            # Add the measurements to the dataframe
             df.loc[len(df)] = {"video": video, "shoulder_width": shoulder_width, "feet_width": feet_width, "knee_width": knee_width}
 
 
         cap.release()
 cv2.destroyAllWindows()
 
+# Calculate the ratios for the distances
 df["ratio_feet_shoulder"] = df["feet_width"] / df["shoulder_width"]
 df["ratio_knee_feet"] = df["knee_width"] / df["feet_width"]
 

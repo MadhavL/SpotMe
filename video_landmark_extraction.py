@@ -6,8 +6,6 @@ from mediapipe.framework.formats import landmark_pb2
 import cv2
 import math
 
-# Older method
-
 # Get video
 # cap = cv2.VideoCapture(0) #use 0 for live capture from camera
 cap = cv2.VideoCapture('data/squats/bad4.mp4')

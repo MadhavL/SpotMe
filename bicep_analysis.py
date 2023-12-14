@@ -26,7 +26,6 @@ Due to its complexity, machine learning will be used for this detection.
 """
 VISIBILITY_THRESHOLD = 0.65
 
-# If have time, could look into stage detection (up / down part of squat), and adjust the thresholds dynamically based on stage of squat
 DIR = 'data/bicep/good/'
 videos = os.listdir(DIR)
 alignment_data = []

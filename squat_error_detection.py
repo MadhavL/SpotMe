@@ -10,12 +10,12 @@ import seaborn as sns
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-# For squats we care about the following points: Back, Hips, Legs
-# nose, left shoulder, right shoulder, right hip, left hip, right knee, left knee, right ankle and left ankle.
+# For squats we care about the following issues:
 
 # Issues being tracked: 1) foot distance, 2) distance between knees
-# Feet placement: Can be detected by calculate ratio between the distance of 2 feet and the distance of 2 shoulders.
-# Knee distance: Can be detected by calculating ratio between the distance of 2 knee and 2 feet.
+# Feet placement: The ratio of the distance between the subjects feet and the distance between shoulders should be within a specific range.
+# Knee distance: The ratio of the distance between the subjects knees and distance between their feet should be within a specific range.
+
 
 #After analyzing the "good squat" videos, here is what we got:
 """        shoulder_width  feet_width  knee_width  ratio_feet_shoulder  ratio_knee_feet
@@ -32,7 +32,6 @@ Feet-shoulder ratio: [1.2 - 2.6], Knee-feet ratio: [0.52 - 1.12]. Anything withi
 FEET_SHOULDER_THRESHOLD = [1.2, 2.1]
 KNEE_FEET_THRESHOLD = [0.6, 0.9]
 
-# If have time, could look into stage detection (up / down part of squat), and adjust the thresholds dynamically based on stage of squat
 cap = cv2.VideoCapture(0)
 # cap = cv2.VideoCapture('data/squats/bad3.mp4')
 
@@ -61,24 +60,25 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
         
         try:
             landmarks = results.pose_landmarks.landmark
-            # * Calculate shoulder width
+            # Calculate distance between subjects shoulders
             left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
 
             shoulder_width = utils.distance(left_shoulder, right_shoulder)
 
-            # * Calculate 2-foot width
+            # Calculate distance between subjects feet
             left_foot_index = [landmarks[mp_pose.PoseLandmark.LEFT_FOOT_INDEX.value].x, landmarks[mp_pose.PoseLandmark.LEFT_FOOT_INDEX.value].y]
             right_foot_index = [landmarks[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value].y]
 
             feet_width = utils.distance(left_foot_index, right_foot_index)
             
-            # * Calculate 2-knee width
+            # Calculate distance between subjects shoulders
             left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x, landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
             right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
 
             knee_width = utils.distance(left_knee, right_knee)
 
+            # Check whether ratios are within thresholds!
             if feet_width/shoulder_width < FEET_SHOULDER_THRESHOLD[0]:
                 cv2.putText(image, "FEET DISTANCE ERROR TOO LITTLE", (15, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
                 cv2.putText(image, "Your feet are too close together. Try shoulder-width apart!", (15, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
