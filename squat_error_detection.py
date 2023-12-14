@@ -81,19 +81,19 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
 
             if feet_width/shoulder_width < FEET_SHOULDER_THRESHOLD[0]:
                 cv2.putText(image, "FEET DISTANCE ERROR TOO LITTLE", (15, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
-                # cv2.putText(image, "Distance between your feet is too little. Try shoulder-width apart!", (10, 40), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+                cv2.putText(image, "Your feet are too close together. Try shoulder-width apart!", (15, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             elif feet_width/shoulder_width > FEET_SHOULDER_THRESHOLD[1]:
                 cv2.putText(image, "FEET DISTANCE ERROR TOO MUCH", (15, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
-                # cv2.putText(image, "Distance between your feet is too much. Try shoulder-width apart!", (10, 40), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+                cv2.putText(image, "Your feet are too far apart. Try shoulder-width apart!", (15, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             if knee_width/feet_width < KNEE_FEET_THRESHOLD[0]:
                 cv2.putText(image, "KNEE DISTANCE ERROR TOO LITTLE", (800, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
-                # cv2.putText(image, "Your knees are folding inwards. Try pushing them apart more!", (10, 40), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+                cv2.putText(image, "Your knees are folding inwards. Try pushing them apart more!", (800, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             elif knee_width/feet_width > KNEE_FEET_THRESHOLD[1]:
                 cv2.putText(image, "KNEE DISTANCE ERROR TOO MUCH", (800, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
-                # cv2.putText(image, "Your knees are too far apart. Try pushing them closer together!", (10, 40), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+                cv2.putText(image, "Your knees are too far apart. Try pushing them closer together!", (800, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
         except:
             pass

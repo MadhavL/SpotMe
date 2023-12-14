@@ -101,7 +101,8 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
             if contraction_angle > DOWN_PHASE_THRESHOLD:
                 stage = "down"
                 if min_contraction_angle > CONTRACTION_THRESHOLD:
-                    cv2.putText(image, f"CONTRACTION ERROR", (250, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
+                    cv2.putText(image, "CONTRACTION ERROR", (250, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
+                    cv2.putText(image, "You are not lifting the weight high enough!", (250, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
             elif contraction_angle < UP_PHASE_THRESHOLD and stage == "down":
                 stage = "up"
@@ -112,7 +113,8 @@ with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as 
                     min_contraction_angle = contraction_angle
 
             if upper_arm_angle > ALIGNMENT_THRESHOLD:
-                cv2.putText(image, f"ALIGNMENT ERROR", (700, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
+                cv2.putText(image, "ALIGNMENT ERROR", (700, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
+                cv2.putText(image, "Your arm is rotating too much around your shoulder.", (700, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
                 
             cv2.putText(image, f"{stage}", (15, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
 
