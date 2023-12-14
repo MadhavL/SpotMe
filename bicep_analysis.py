@@ -106,12 +106,20 @@ for video in videos:
 
 cv2.destroyAllWindows()
 
-for contraction, alignment in zip(contraction_data, alignment_data):
-    fig, ax = plt.subplots(2)
-    ax[0].scatter(range(len(contraction)), contraction, 1, marker='o')
-    ax[1].scatter(range(len(alignment)), alignment, 1, marker='o')
-    # ax.set_xlabel(label_x)
-    # ax.set_ylabel(label_y)
-    # ax.set_title(f"Correlation: {np.corrcoef(x, y)[0][1]:.2f}")
-    # ax.plot(x, m*x+b, color='black')
-    plt.show()
+num = len(contraction_data)
+rows = int(np.sqrt(num))
+columns = num // rows + 1
+fig, axes = plt.subplots(nrows=rows, ncols=columns)
+fig2, axes2 = plt.subplots(nrows=rows, ncols=columns)
+for (contraction, alignment, ax1, ax2) in zip(contraction_data, alignment_data, axes.ravel(), axes2.ravel()):
+    ax1.scatter(range(len(contraction)), contraction, 4, marker='o')
+    ax2.scatter(range(len(alignment)), alignment, 4, marker='o')
+    ax1.set_xlabel("Frames")
+    ax2.set_xlabel("Frames")
+    ax1.set_ylabel("Contraction Angle")
+    ax2.set_ylabel("Arm/Torso Angle")
+fig.tight_layout()
+fig.suptitle("Bicep Contraction Data")
+fig2.suptitle("Arm Alignment Data")
+fig2.tight_layout()
+plt.show()
