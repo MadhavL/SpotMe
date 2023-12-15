@@ -142,7 +142,7 @@ X_test = np.array(X_test, dtype=float)
 
 cv2.destroyAllWindows()
 
-knn_classifier = KNeighborsTimeSeriesClassifier(n_neighbors=1, metric="dtw")
+knn_classifier = KNeighborsTimeSeriesClassifier(n_neighbors=3, metric="dtw")
 
 # Train the classifier
 knn_classifier.fit(X_train, y_train)
