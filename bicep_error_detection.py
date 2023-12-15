@@ -20,9 +20,6 @@ If the angle is greater than 10 degrees, it is an error
 Can be detected by calculating the angle between the wrist, elbow and shoulder. 
 If the minimum angle is more than 60 degrees, there is not enough contraction
 
-3. Lean too far back: the performer’s torso leans back or foreward during the exercise for momentum.
-Due to its complexity, machine learning will be used for this detection.
-
 """
 
 VISIBILITY_THRESHOLD = 0.65
