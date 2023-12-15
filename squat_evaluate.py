@@ -33,6 +33,7 @@ FEET_SHOULDER_THRESHOLD = [1.2, 2.6]
 KNEE_FEET_THRESHOLD = [0.53, 1.15]
 error_threshold = 10
 
+num_bad = 0
 for i in range(1, 6):
     cap = cv2.VideoCapture('data/squats/test/bad' + str(i) + '.mp4')
 
@@ -117,12 +118,15 @@ for i in range(1, 6):
     print("Error Count: " + str(error_count))
     if error_count > error_threshold:
         print("bad")
+        num_bad += 1
     else:
         print("good")
 
     cap.release()
 
+print(f"Detected {num_bad} out of 5 bad squats ({(num_bad/5 * 100):.2f}%)")
 
+num_good = 0
 for i in range(1, 6):
 
     cap = cv2.VideoCapture('data/squats/test/good' + str(i) + '.mp4')
@@ -210,7 +214,10 @@ for i in range(1, 6):
         print("bad")
     else:
         print("good")
+        num_good += 1
 
     cap.release()
 
+print(f"Detected {num_good} out of 5 good squats ({(num_good/5 * 100):.2f}%)")
+print(f"\nTotal detected {((num_good+num_bad)/10)*100:.2f}% samples correctly")
 cv2.destroyAllWindows()
