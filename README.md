@@ -2,11 +2,14 @@
 
 ## Setup Instructions
 1. Clone the repo into a local folder
-2. Install necessary Python packages (run these commands in terminal if you haven't already)
- - pip install mediapipe 
- - pip install seaborn
- - pip install matplotlib
- - pip install tslearn
- - pip install sklearn
- - pip install pandas 
-3. Run python file_name.py in terminal to run a Python file 
+2. Install necessary Python packages: run `pip install -r requirements.txt`
+3. If you want to see our analysis, run the analysis files:
+- [Bicep Analysis](/bicep_analysis.py)
+- [Squat Analysis](/squat_analysis.py)
+4. If you want to run live error detection on a webcam stream, run:
+- [Bicep Error Detection](/bicep_error_detection.py)
+- [Squat Error Detection](/squat_error_detection.py)
+5. If you want to see our error detection results on a test dataset, run:
+- [Bicep Geometric Evaluation](/bicep_evaluate.py)
+- [Bicep Machine Learning Evaluation](/bicep_dtw_knn.py)
+- [Squat Geometric Evaluation](/squat_evaluate.py)
