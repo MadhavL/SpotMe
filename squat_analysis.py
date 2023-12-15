@@ -18,7 +18,7 @@ mp_pose = mp.solutions.pose
 
 df = pd.DataFrame(columns=["video", "shoulder_width", "feet_width", "knee_width"])
 
-DIR = 'data/squats/good/'
+DIR = 'data/squats/train/'
 videos = os.listdir(DIR)
 for video in videos:
     cap = cv2.VideoCapture(DIR + video)

@@ -26,17 +26,16 @@ VISIBILITY_THRESHOLD = 0.65
 UP_PHASE_THRESHOLD = 105
 DOWN_PHASE_THRESHOLD = 120
 CONTRACTION_THRESHOLD = 50
-ALIGNMENT_THRESHOLD = 9
+ALIGNMENT_THRESHOLD = 20
 error_threshold = 10
 
 GOOD = 'data/bicep/good'
 BAD = 'data/bicep/bad'
 videos = os.listdir(GOOD) + os.listdir(BAD)
 X_train_names, X_test_names = train_test_split(videos, test_size=0.4, random_state=42)
-total = 0
+correct = 0
 
 for name in X_test_names:
-    print("Video: " + name)
     cap = None 
     if "good" in name:
         cap = cv2.VideoCapture('data/bicep/good/' + str(name))
@@ -44,6 +43,8 @@ for name in X_test_names:
         cap = cv2.VideoCapture('data/bicep/bad/' + str(name))
     stage = "down"
     min_contraction_angle = 0
+    min_alignment_angle = 180
+    max_alignment_angle = -180
 
     with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as pose:
         error_count = 0
@@ -109,11 +110,17 @@ for name in X_test_names:
                     upper_arm_angle = utils.calculate_angle(left_hip, left_shoulder, left_elbow)
                     contraction_angle = utils.calculate_angle(left_shoulder, left_elbow, left_wrist)
 
+                if upper_arm_angle < min_alignment_angle:
+                    min_alignment_angle = upper_arm_angle
+                elif upper_arm_angle > max_alignment_angle:
+                    max_alignment_angle = upper_arm_angle
+
                 if contraction_angle > DOWN_PHASE_THRESHOLD:
                     stage = "down"
                     if min_contraction_angle > CONTRACTION_THRESHOLD:
                         cv2.putText(image, "CONTRACTION ERROR", (250, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
                         cv2.putText(image, "You are not lifting the weight high enough!", (250, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+                        error_count += 1
 
                 elif contraction_angle < UP_PHASE_THRESHOLD and stage == "down":
                     stage = "up"
@@ -123,7 +130,7 @@ for name in X_test_names:
                     if contraction_angle < min_contraction_angle:
                         min_contraction_angle = contraction_angle
 
-                if upper_arm_angle > ALIGNMENT_THRESHOLD:
+                if max_alignment_angle - min_alignment_angle > ALIGNMENT_THRESHOLD:
                     cv2.putText(image, "ALIGNMENT ERROR", (700, 24), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 0), 1, cv2.LINE_AA)
                     error_count += 1
                     cv2.putText(image, "Your arm is rotating too much around your shoulder.", (700, 48), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -143,17 +150,16 @@ for name in X_test_names:
 
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
-
-
-    print("Error Count: " + str(error_count))
+    
     if error_count > error_threshold:
+        print("ERROR")
         if "bad" in name:
-            total += 1
+            correct += 1
     else:
+        print("GOOD")
         if "good" in name:
-            total += 1
+            correct += 1
     cap.release()
 
-print(total / len(X_test_names))
-
+print(f"Percentage correct: {(correct / len(X_test_names))*100:.2f}%")
 cv2.destroyAllWindows()
